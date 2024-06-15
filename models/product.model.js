@@ -32,9 +32,9 @@ const productSchema = mongoose.Schema(
     quantity: {
       type: String,
     },
-    video :[{
+    video :{
       type : String
-    }]
+    }
   },
   { timestamps: { createdAt: "createdAt" } }
 );

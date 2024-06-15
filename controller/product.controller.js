@@ -13,7 +13,8 @@ module.exports = {
         }
       });
       obj = { ...req.body , productHeroImg:productHeroImg.url };
-    } else {
+    } 
+    else {
       obj = req.body;
     }
     let result = await productServ.create(obj);

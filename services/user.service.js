@@ -141,7 +141,6 @@ module.exports = {
     } catch (error) {
       count.err = error;
     }
-    console.log(count);
     return count;
   },
   addToCart: async function (body) {
@@ -167,7 +166,7 @@ module.exports = {
   contact: async function (body) {
     let result = {};
     try {
-      result.message = "We have recived your message and come back to you soon:)";
+      result.message = "We have recived your message and get back to you soon:)";
       let transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 587,
