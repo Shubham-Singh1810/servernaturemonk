@@ -25,15 +25,11 @@ module.exports = {
          await new UserOtp(obj).save();
         let transporter = nodemailer.createTransport({
           host: "smtp.gmail.com",
-          port: 587,
-          secure: false,
-          requireTLS: true,
+          port: 465,
+          secure: true, // true for 465, false for other ports
           auth: {
-            user: "team.softtechgem@gmail.com", // generated ethereal user
-            pass: "eqauulfefeodhxel", // generated ethereal password
-          },
-          tls: {
-            rejectUnauthorized: false,
+            user: "tpaunikar92@gmail.com", // generated ethereal user
+            pass: "yapnmzshchqbvnwy", // generated ethereal password
           },
         });
         let mailOption = {
