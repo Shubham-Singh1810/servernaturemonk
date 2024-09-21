@@ -33,7 +33,7 @@ module.exports = {
           },
         });
         let mailOption = {
-          from: "team.softtechgem@gmail.com",
+          from: "tpaunikar92@gmail.com",
           to: body.email,
           subject: "Email verification for Nature Monk Shop",
           text: `Your OTP for email verification is ${otp}`,
