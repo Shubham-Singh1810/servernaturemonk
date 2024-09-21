@@ -29,7 +29,7 @@ module.exports = {
           secure: false,
           requireTLS: true,
           auth: {
-            user: "hittheshubham1810@gmail.com", // generated ethereal user
+            user: "team.softtechgem@gmail.com", // generated ethereal user
             pass: "eqauulfefeodhxel", // generated ethereal password
           },
           tls: {
@@ -37,9 +37,9 @@ module.exports = {
           },
         });
         let mailOption = {
-          from: "hittheshubham1810@gmail.com",
+          from: "team.softtechgem@gmail.com",
           to: body.email,
-          subject: "Email verification for Nature Monk",
+          subject: "Email verification for Nature Monk Shop",
           text: `Your OTP for email verification is ${otp}`,
         };
         transporter.sendMail(mailOption, async (error, info) => {
