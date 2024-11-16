@@ -4,7 +4,7 @@ const userController = require("../controller/user.controller")
 const imgUpload = require("../utils/multer")
 
 router.route("/sendOtp").post(userController.sendOtp);
-router.route("/verifyOtp").post(userController.verifyOtp);
+router.route("/verify-otp").post(userController.verifyOtp);
 router.route("/login").post(userController.login);
 router.route("/update").put(userController.update);
 router.route("/updateProfileImg").put(imgUpload.single("profileImg"),userController.updateProfileImg);

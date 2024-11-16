@@ -4,7 +4,6 @@ const util = require("../utils/util");
 const multer = require("multer");
 module.exports = {
   sendOtp: async function (req, res) {
-    console.log(req.body)
     let result = await userServ.sendOtp(req.body);
     util.sendResponse(result, req, res);
   },

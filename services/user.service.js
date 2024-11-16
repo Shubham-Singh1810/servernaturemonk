@@ -9,49 +9,54 @@ const { query } = require("express");
 require("dotenv").config();
 module.exports = {
   sendOtp: async function (body) {
-    let otp = Math.floor(Math.random() * 100000) + 100000;
-    let obj = {
-      email: body.email,
-      password: body.password,
-      fullName: body.fullName,
-      otp: otp,
-    };
-    let result = {};
-    let tempUser = await UserOtp.findOne({ email: body.email });
+    const otp = Math.floor(100000 + Math.random() * 900000); // Ensures a 6-digit OTP
+    const result = {};
+
+    const tempUser = await UserOtp.findOne({ email: body.email });
     if (tempUser) {
-      result.message = "This email is already registered";
-    } else {
-      try {
-         await new UserOtp(obj).save();
-        let transporter = nodemailer.createTransport({
-          host: "smtp.gmail.com",
-          port: 465,
-          secure: true, // true for 465, false for other ports
-          auth: {
-            user: "tpaunikar92@gmail.com", // generated ethereal user
-            pass: "yapnmzshchqbvnwy", // generated ethereal password
-          },
-        });
-        let mailOption = {
-          from: "tpaunikar92@gmail.com",
-          to: body.email,
-          subject: "Email verification for Nature Monk Shop",
-          text: `Your OTP for email verification is ${otp}`,
-        };
-        transporter.sendMail(mailOption, async (error, info) => {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log(info.response);
-          }
-        });
-        result.message = "Otp has been sent to the given email address";
-      } catch (error) {
-        result.err = error;
-      }
+        result.message = "This email is already registered";
+        return result;
     }
+
+    const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+            user: process.env.NODEMAILER_USER, // your email
+            pass: process.env.NODEMAILER_PASS, // your app password or OAuth token
+        },
+    });
+
+    const mailOptions = {
+        from: "tpaunikar92@gmail.com",
+        to: body.email,
+        subject: "Email Verification for Nature Monk Shop",
+        text: `Your OTP for email verification is ${otp}`,
+    };
+
+    try {
+        // Try to send the OTP email first
+        await transporter.sendMail(mailOptions);
+
+        // If the email is sent successfully, save the user
+        const obj = {
+            email: body.email,
+            password: body.password,
+            fullName: body.fullName,
+            otp: otp,
+        };
+
+        await new UserOtp(obj).save(); // Save user only after successful email
+        result.message = "OTP has been sent to the given email address";
+    } catch (error) {
+        console.error("Error sending email:", error.message);
+        result.err = "Failed to send OTP. Please try again later.";
+    }
+
     return result;
-  },
+},
+
   verifyOtp: async function (body) {
     let result = {};
     try {
@@ -75,11 +80,11 @@ module.exports = {
   login: async function (body) {
     let result = {};
     try {
-      logedUser = await User.findOne(body).populate({path:"cartItem"}).select("-password");
+      logedUser = await User.findOne(body).populate({ path: "cartItem" }).select("-password");
       if (logedUser != null) {
         result.data = logedUser;
         result.token = await jwt.sign({ logedUser }, process.env.JWT_KEY);
-        result.message = "NatureNonk welcomes You :)";
+        result.message = "User Logged In Successfully";
       } else {
         result.message = "Invalid login details";
       }
@@ -140,13 +145,12 @@ module.exports = {
     return count;
   },
   addToCart: async function (body) {
-    let result ={};
+    let result = {};
     let query;
     const user = await User.findOne({ _id: body.userId });
     if (!user) {
-      result.message="User not found"
-    }
-    else{
+      result.message = "User not found";
+    } else {
       if (user.cartItem.includes(body.productId)) {
         query = { $pull: { cartItem: body.productId } };
         result.message = "Removed From Cart";
@@ -155,8 +159,8 @@ module.exports = {
         result.message = "Added To Cart";
       }
     }
-     await User.findByIdAndUpdate({_id: body.userId}, query);
-     result.data =await User.findOne({_id : body.userId}).populate({path :"cartItem"})
+    await User.findByIdAndUpdate({ _id: body.userId }, query);
+    result.data = await User.findOne({ _id: body.userId }).populate({ path: "cartItem" });
     return result;
   },
   contact: async function (body) {
@@ -179,7 +183,7 @@ module.exports = {
       let mailOption = {
         from: body.email,
         to: "hittheshubham1810@gmail.com",
-        subject: body.name+" wants to connect you",
+        subject: body.name + " wants to connect you",
         text: `${body.name} sends you message , subject : ${body.subject} , phone number : ${body.phoneNumber} and messages : ${body.message} `,
       };
       transporter.sendMail(mailOption, async (error, info) => {
