@@ -9,6 +9,7 @@ module.exports = {
     try {
       result.data = await new Order(body).save();
       result.message = "Order placed successfully";
+      result.statusCode = 200;
       let user = await User.findOne({_id: body.userId})
       let product = await Product.findOne({_id: body.productId});
       let transporter = nodemailer.createTransport({
@@ -25,10 +26,10 @@ module.exports = {
         },
       });
       let mailOption = {
-        from: body.email,
-        to: "hittheshubham1810@gmail.com",
+        from: "hittheshubham1810@gmail.com",
+        to: "gaidhaneabhishek@gmail.com",
         subject: "You recived an order",
-        text: `${user.fullName} has placed an order for ${product.title} and quantity is ${body.quantity} , mode of payment is ${body.paymentMethod} and the subtotal amout is ${body.subTotal}`,
+        text: `${user.fullName} has placed an order for ${product.title} and the quantity is ${product.quantity} and the user address is ${body.address}, ${body.state} , ${body.city} and pincode is ${body.pincode}` ,
       };
       transporter.sendMail(mailOption, async (error, info) => {
         if (error) {
